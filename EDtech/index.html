@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head><title>Login / Signup</title></head>
+<body>
+  <h2>Signup</h2>
+  <input placeholder="Name" id="signup_name"><br>
+  <input placeholder="Email" id="signup_email"><br>
+  <input placeholder="Password" type="password" id="signup_pass"><br>
+  <select id="signup_role">
+    <option value="student">Student</option>
+    <option value="teacher">Teacher</option>
+  </select><br>
+  <button onclick="signup()">Signup</button>
+
+  <h2>Login</h2>
+  <input placeholder="Email" id="login_email"><br>
+  <input placeholder="Password" type="password" id="login_pass"><br>
+  <button onclick="login()">Login</button>
+
+  <script>
+    function signup() {
+      fetch("/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: document.getElementById("signup_name").value,
+          email: document.getElementById("signup_email").value,
+          password: document.getElementById("signup_pass").value,
+          role: document.getElementById("signup_role").value
+        })
+      }).then(res => res.json()).then(alert);
+    }
+
+    function login() {
+      fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          email: document.getElementById("login_email").value,
+          password: document.getElementById("login_pass").value
+        })
+      }).then(res => res.json()).then(data => {
+        if (data.role === "teacher") {
+          localStorage.setItem("user", JSON.stringify(data));
+          window.location.href = "teacher.html";
+        } else {
+          localStorage.setItem("user", JSON.stringify(data));
+          window.location.href = "student.html";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>Student Panel</title></head>
+<body>
+  <h2>Submit Assignment</h2>
+  <input placeholder="Assignment ID" id="aid"><br>
+  <textarea placeholder="Your Submission" id="content"></textarea><br>
+  <input placeholder="Submitted At (YYYY-MM-DD)" id="date"><br>
+  <button onclick="submit()">Submit</button>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    function submit() {
+      fetch("/submit", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          assignment_id: parseInt(document.getElementById("aid").value),
+          student_id: user.id,
+          content: document.getElementById("content").value,
+          submitted_at: document.getElementById("date").value
+        })
+      }).then(res => res.json()).then(alert);
+    }
+  </script>
+</body>
+</html>

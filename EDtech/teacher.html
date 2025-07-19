@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head><title>Teacher Panel</title></head>
+<body>
+  <h2>Create Assignment</h2>
+  <input placeholder="Title" id="title"><br>
+  <textarea placeholder="Description" id="desc"></textarea><br>
+  <input placeholder="Due Date (YYYY-MM-DD)" id="due"><br>
+  <button onclick="createAssignment()">Create</button>
+
+  <h2>View Submissions</h2>
+  <input placeholder="Assignment ID" id="view_id"><br>
+  <button onclick="viewSubs()">View</button>
+  <div id="subs"></div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    function createAssignment() {
+      fetch("/assignments", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          title: document.getElementById("title").value,
+          description: document.getElementById("desc").value,
+          due_date: document.getElementById("due").value,
+          teacher_id: user.id
+        })
+      }).then(res => res.json()).then(alert);
+    }
+
+    function viewSubs() {
+      const id = document.getElementById("view_id").value;
+      fetch(`/submissions/${id}`).then(res => res.json()).then(data => {
+        document.getElementById("subs").innerHTML = JSON.stringify(data, null, 2);
+      });
+    }
+  </script>
+</body>
+</html>
